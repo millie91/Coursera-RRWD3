@@ -69,6 +69,6 @@ class RacersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def racer_params
-      params.require(:racer).permit(:id, :number, :first_name, :last_name, :gender, :group, :secs)
+      params.require(:racer).permit(:number, :first_name, :last_name, :gender, :group, :secs)
     end
 end
