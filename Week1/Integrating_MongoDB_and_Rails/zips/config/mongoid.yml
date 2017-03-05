@@ -20,8 +20,6 @@ development:
         # (default: primary)
         # read:
         #   mode: :secondary_preferred
-        #   tag_sets:
-        #     - use: web
 
         # The name of the user for authentication.
         # user: 'user'
@@ -50,8 +48,8 @@ development:
         # via ismaster commands. (default: 10)
         # heartbeat_frequency: 10
 
-        # The time in seconds for selecting servers for a near read preference. (default: 0.015)
-        # local_threshold: 0.015
+        # The time in seconds for selecting servers for a near read preference. (default: 5)
+        # local_threshold: 5
 
         # The timeout in seconds for selecting a server for an operation. (default: 30)
         # server_selection_timeout: 30
@@ -92,7 +90,7 @@ development:
         # A passphrase for the private key.
         # ssl_key_pass_phrase: password
 
-        # Whether or not to do peer certification validation. (default: true)
+        # Whether or not to do peer certification validation. (default: false)
         # ssl_verify: true
 
         # The file containing a set of concatenated certification authority certifications
@@ -125,15 +123,6 @@ development:
 
     # Ensure all times are UTC in the app side. (default: false)
     # use_utc: false
-
-    # Set the Mongoid and Ruby driver log levels when not in a Rails
-    # environment. The Mongoid logger will be set to the Rails logger
-    # otherwise.(default: :info)
-    # log_level: :info
-
-    # Application name that is printed to the mongodb logs upon establishing a
-    # connection in server versions >= 3.4. Note that the name cannot exceed 128 bytes.
-    # app_name: MyApplicationName
 test:
   clients:
     default:
@@ -142,5 +131,11 @@ test:
         - localhost:27017
       options:
         read:
-          mode: :primary
+          mode: primary
         max_pool_size: 1
+production:
+  clients:
+    default:
+      uri: <%= ENV['MONGOLAB_URI'] %>
+      options:
+        connect_timeout: 15
