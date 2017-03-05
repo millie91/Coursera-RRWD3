@@ -43,14 +43,18 @@ class Solution
   #
 
   def clear_collection
+    @coll.delete_many({})
     #place solution here
   end
 
-  def load_collection(file_path) 
+  def load_collection(file_path)
+    hash=self.class.load_hash(file_path)
+    @coll.insert_many(hash) 
     #place solution here
   end
 
   def insert(race_result)
+    @coll.insert_one(race_result)
     #place solution here
   end
 
@@ -59,10 +63,12 @@ class Solution
   #
 
   def all(prototype={})
+    @coll.find(prototype)
     #place solution here
   end
 
   def find_by_name(fname, lname)
+    @coll.find(first_name: fname, last_name: lname).projection(first_name:1, last_name:1, number:1, _id:0)
     #place solution here
   end
 
@@ -71,6 +77,7 @@ class Solution
   #
 
   def find_group_results(group, offset, limit) 
+    @coll.find(group: group).projection(group:0, _id:0).sort(secs:1).skip(offset).limit(limit)
     #place solution here
   end
 
@@ -78,11 +85,13 @@ class Solution
   # Lecture 4: Find By Criteria
   #
 
-  def find_between(min, max) 
+  def find_between(min, max)
+    @coll.find(secs: {:$gt => min, :$lt => max}) 
     #place solution here
   end
 
   def find_by_letter(letter, offset, limit) 
+    @coll.find(last_name: {:$regex => "^#{letter.upcase}.+"}).sort(last_name:1).skip(offset).limit(limit)
     #place solution here
   end
 
@@ -91,10 +100,12 @@ class Solution
   #
   
   def update_racer(racer)
+    @coll.find(_id: racer[:_id]).replace_one(racer)
     #place solution here
   end
 
   def add_time(number, secs)
+    @coll.find(number: number).update_one(:$inc => {:secs => secs})
     #place solution here
   end
 
