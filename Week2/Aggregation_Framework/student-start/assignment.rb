@@ -70,7 +70,7 @@ class Solution
   def id_number_map 
     #place solution here
     @coll.find.aggregate([{
-      :$project=>{
+      :$project=> {
         :_id=>1,
         :number=>1
       }
@@ -80,6 +80,16 @@ class Solution
 
   def concat_names
     #place solution here
+    @coll.find.aggregate([{
+      :$project=> {
+        :_id=>0,
+        :number=>1,
+        :name=> {
+          :$concat => ["$last_name", ", ", "$first_name"]
+          }
+      }
+    }
+    ])
   end
 
   #
