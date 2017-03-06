@@ -128,6 +128,16 @@ class Solution
 
   def group_last_names_set
     #place solution here
+    @coll.find.aggregate([{
+      :$group=>{
+        :_id=>{
+          :gender=>"$gender",
+          :age=>"$group"
+        },
+        last_names:{:$addToSet=>"$last_name"}
+      }
+    }
+    ])
   end
 
   #
