@@ -99,6 +99,17 @@ class Solution
 
   def group_times
     #place solution here
+    @coll.find.aggregate([ {
+      :$group=>{
+        :_id=>{
+          :gender=>"$gender",
+          :age=>"$group" 
+        }, 
+        runners:{:$sum=>1}, 
+        fastest_time:{:$min=>"$secs"}
+      }
+    }
+    ])
   end
 
   def group_last_names
