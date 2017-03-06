@@ -57,10 +57,25 @@ class Solution
 
   def racer_names
     #place solution here
+    @coll.find.aggregate([ {
+      :$project=>{
+        :_id=>0,
+        :first_name=>1,
+        :last_name=>1
+      }
+    }
+    ])
   end
 
   def id_number_map 
     #place solution here
+    @coll.find.aggregate([{
+      :$project=>{
+        :_id=>1,
+        :number=>1
+      }
+    }
+    ])
   end
 
   def concat_names
