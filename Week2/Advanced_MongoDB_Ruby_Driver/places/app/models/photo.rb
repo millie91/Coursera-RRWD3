@@ -70,4 +70,38 @@ def place=(p)
   end
 end
 
+def self.all(offset = 0, limit = nil)
+	if !limit.nil?
+	docs = mongo_client.database.fs.find.skip(offset).limit(limit)
+	else
+	docs = mongo_client.database.fs.find.skip(offset)
+	end
+	docs.map{|doc| Photo.new(doc)}
+end
+
+def find_nearest_place_id(dist)
+	Place.near(@location,dist).limit(1).projection({:_id=>1}).first[:_id]
+end
+
+def self.find(params)
+	id = BSON::ObjectId.from_string(params)
+	p = mongo_client.database.fs.find(:_id => id).first
+	p.nil? ? nil : photo = Photo.new(p)
+end
+
+def contents
+   f = self.class.mongo_client.database.fs.find_one(:_id=>BSON::ObjectId.from_string(@id))
+    if f 
+      buffer = ""
+      f.chunks.reduce([]) do |x,chunk| 
+          buffer << chunk.data.data 
+      end
+      return buffer
+    end 
+end
+
+def destroy
+	self.class.mongo_client.database.fs.find(:_id=>BSON::ObjectId.from_string(@id)).delete_one
+end
+
 end
