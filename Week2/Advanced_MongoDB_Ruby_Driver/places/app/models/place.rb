@@ -30,4 +30,8 @@ class Place
 	    hash=JSON.parse(file)
 	    place=collection.insert_many(hash)
 	end
+
+	def self.find_by_short_name(s)
+		collection.find({"address_components.short_name":s})
+	end
 end
