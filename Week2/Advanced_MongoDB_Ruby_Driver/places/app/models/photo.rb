@@ -40,4 +40,34 @@ def place=(p)
 
  end
 
+ def save
+	
+	if @place.is_a? Place
+    @place = BSON::ObjectId.from_string(@place.id)
+  end
+  if !persisted?
+    gps = EXIFR::JPEG.new(@contents).gps
+    @contents.rewind
+    description={}
+    description[:content_type] = "image/jpeg"
+    location=Point.new(:lng=>gps.longitude, :lat=>gps.latitude)
+    description[:metadata] = {
+    	:place => @place,
+      :location => location.to_hash
+    }
+    grid_file = Mongo::Grid::File.new(@contents.read, description)
+    @id = self.class.mongo_client.database.fs.insert_one(grid_file).to_s
+    @location = Point.new(location.to_hash)
+  else
+    doc = self.class.mongo_client.database.fs.find(
+      '_id': BSON::ObjectId.from_string(@id)
+    ).first
+    doc[:metadata][:place] = @place
+    doc[:metadata][:location] = @location.to_hash
+    self.class.mongo_client.database.fs.find(
+      '_id': BSON::ObjectId.from_string(@id)
+    ).update_one(doc)
+  end
+end
+
 end
