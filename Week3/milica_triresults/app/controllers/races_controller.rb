@@ -4,15 +4,14 @@ class RacesController < ApplicationController
   # GET /races
   # GET /races.json
 
-    def index
-  @races = Race.all.order('date DESC')
-    end
-
+  def index
+    @races = Race.all.order('date DESC')
+  end
 
   # GET /races/1
   # GET /races/1.json
   def show
-   @entrants=Entrant.where(:"race._id"=>@race.id).order(overall: :asc, last_name: :asc, first_name: :asc)
+    @entrants = Entrant.where(:"race._id" => @race.id).order(overall: :asc, last_name: :asc, first_name: :asc)
   end
 
   # GET /races/new
@@ -65,13 +64,14 @@ class RacesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_race
-      @race = Race.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def race_params
-      params.require(:race).permit(:name, :date, :city, :state, :swim_distance, :swim_units, :bike_distance, :bike_units, :run_distance, :run_units)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_race
+    @race = Race.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def race_params
+    params.require(:race).permit(:name, :date, :city, :state, :swim_distance, :swim_units, :bike_distance, :bike_units, :run_distance, :run_units)
+  end
 end

@@ -10,7 +10,7 @@ class RacersController < ApplicationController
   # GET /racers/1
   # GET /racers/1.json
   def show
-  @races=@racer.races
+    @races = @racer.races
   end
 
   # GET /racers/new
@@ -20,18 +20,16 @@ class RacersController < ApplicationController
 
   # GET /racers/1/edit
   def edit
-    @races=Race.upcoming_available_to(@racer).order_by(:date.asc)
+    @races = Race.upcoming_available_to(@racer).order_by(:date.asc)
   end
 
   # POST /racers
   # POST /racers.json
-  
-  
-  
+
   def create_entry
-    @racer=Racer.find(params[:racer_id]) 
-    @race=Race.find(params[:race_id]) 
-    @entrant=@race.create_entrant @racer
+    @racer = Racer.find(params[:racer_id])
+    @race = Race.find(params[:race_id])
+    @entrant = @race.create_entrant @racer
 
     respond_to do |format|
       if @entrant.valid?
@@ -43,8 +41,7 @@ class RacersController < ApplicationController
       end
     end
   end
-  
-  
+
   def create
     @racer = Racer.new(racer_params)
 
@@ -84,13 +81,14 @@ class RacersController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_racer
-      @racer = Racer.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def racer_params
-      params.require(:racer).permit(:first_name, :last_name, :gender, :birth_year, :city, :state)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_racer
+    @racer = Racer.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def racer_params
+    params.require(:racer).permit(:first_name, :last_name, :gender, :birth_year, :city, :state)
+  end
 end
