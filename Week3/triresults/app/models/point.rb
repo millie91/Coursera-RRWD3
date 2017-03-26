@@ -1,40 +1,49 @@
 class Point
-
   attr_accessor :longitude, :latitude
 
-  def initialize(longitude = nil, latitude = nil)
-    @longitude = longitude
-    @latitude = latitude
+  # initialize Point class
+  def initialize(params)
+    if params[:coordinates]
+      @longitude = params[:coordinates][0]
+      @latitude = params[:coordinates][1]
+    else
+      @longitude = params[:lng]
+      @latitude = params[:lat]
+    end
   end
 
+  # Converts point into mongo hash
   def mongoize
-    return {type: "Point", coordinates: [(@longitude), (@latitude)]}
+    {
+      type: 'Point',
+      coordinates: [@longitude, @latitude]
+    }
   end
 
-  def self.mongoize object
+  # Return mongo object as ruby hash
+  def self.mongoize(object)
     case object
-    when nil then
-      nil
-    when Point then
-      object.mongoize
-    else
-      object
+    when nil then nil
+    when Hash then object
+    when Point then object.mongoize
     end
   end
 
-  def self.demongoize object
+  # Returns instance of class
+  def self.demongoize(object)
     case object
-    when nil then
-      nil
-    when Hash then
-      Point.new(object[:coordinates][0], object[:coordinates][1])
-    else
-      object
+    when nil then nil
+    when Hash then Point.new(object)
+    when Point then Point
     end
   end
 
+  # Update to database friendly form
   def self.evolve(object)
-    mongoize(object)
+    case object
+    when nil then nil
+    when Hash then Point.new(object).mongoize
+    when Point then object.mongoize
+    end
   end
-
 end

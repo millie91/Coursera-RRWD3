@@ -1,5 +1,4 @@
 class Placing
-
   attr_accessor :name, :place
 
   def initialize(name, place)
@@ -8,33 +7,30 @@ class Placing
   end
 
   def mongoize
-    {name: @name, place: @place}
-  end
-
-  def self.mongoize(object)
-    case object
-    when Placing then
-      object.mongoize
-    when nil
-      nil
-    else
-      object
+    hashh = { name: @name, place: @place }
     end
-  end
 
-  def self.demongoize(object)
-    case object
-    when Hash then
-      Placing.new(object[:name], object[:place])
-    when nil then
-      nil
-    else
-      object
-    end
-  end
+  def self.mongoize(obj)
+    case obj
+    when nil then nil
+    when Hash then obj
+    when Placing then { name: obj.name, place: obj.place }
+     end
+   end
 
-  def self.evolve(object)
-    mongoize(object)
-  end
+  def self.demongoize(obj)
+    case obj
+    when nil then nil
+    when Hash then Placing.new(obj[:name], obj[:place])
+    when Placing then obj
+     end
+   end
 
-end
+  def self.evolve(obj)
+    case obj
+    when nil then nil
+    when Hash then obj
+    when Placing then { name: obj.name, place: obj.place }
+     end
+   end
+  end

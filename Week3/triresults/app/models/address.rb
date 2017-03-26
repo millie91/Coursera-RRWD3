@@ -1,41 +1,48 @@
 class Address
-
   attr_accessor :city, :state, :location
 
-  def initialize(city = nil, state = nil, location = nil)
-    @city = city
-    @state = state
-    @location = Point.new(location[:coordinates][0], location[:coordinates][1]) if location.present?
+  # initialize Address class
+  def initialize(params = {})
+    @city = params[:city] if params[:city]
+    @state = params[:state] if params[:state]
+    @location = params[:loc] if params[:loc]
   end
 
+  # Converts point into mongo hash
   def mongoize
-    {city: @city, state: @state, loc: @location.mongoize}
+    {
+      city: @city,
+      state: @state,
+      loc: @location.mongoize
+    }
   end
 
-  def self.mongoize object
+  # Return mongo object as ruby hash
+  def self.mongoize(object)
     case object
-    when nil then
-      nil
-    when Address then
-      object.mongoize
-    else
-      object
+    when nil then nil
+    when Hash then object
+    when Address then object.mongoize
     end
   end
 
-  def self.demongoize object
+  # Returns instance of class
+  def self.demongoize(object)
     case object
-    when nil then
-      nil
-    when Hash then
-      Address.new(object[:city], object[:state], object[:loc])
-    else
-      object
+    when nil then nil
+    when Hash
+      loc = object[:loc] ? Point.new(object[:loc]) : nil
+      Address.new(city: object[:city], state: object[:state], loc: loc)
+    when Address then Address
     end
   end
 
+  # Convert object to database friendly form
   def self.evolve(object)
-    mongoize(object)
+    case object
+    when nil then nil
+    when Hash then object
+    when Address then object.mongoize
+    end
   end
-
 end
