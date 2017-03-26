@@ -20,9 +20,6 @@ class Entrant
   delegate :date, :date=, to: :race, prefix: "race"
   scope :upcoming, ->{where({ :"race.date"=> {:$gte=>Time.current}})}
   scope :past, ->{where({ :"race.date"=> {:$lt=>Time.current}})}
-  
-  
-  
 
   def overall_place
   overall.place if overall
@@ -42,18 +39,11 @@ end
   
   self.secs=results.map {|r|r.secs}.select{|r|r}.inject(0, :+)
   
-
-  
-
   end
- 
 
- 
  def the_race
  race.race
  end
-
-
 
 RESULTS = {"swim"=>SwimResult, 
            "t1"=>LegResult, 
