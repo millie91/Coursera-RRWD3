@@ -12,10 +12,4 @@ end
   delegate :birth_year, :birth_year=, to: :info
   delegate :city, :city=, to: :info
   delegate :state, :state=, to: :info
-  
-  
-  
-    
-
-  
   end
